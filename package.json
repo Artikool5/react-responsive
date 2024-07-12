@@ -1,11 +1,35 @@
 {
-  "name": "react-responsive",
+  "name": "@artikool5/react-responsive",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/react-responsive.cjs.js",
+  "module": "dist/react-responsive.esm.js",
+  "browser": "dist/react-responsive.umd.js",
+  "types": "dist/types/main.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "preversion": "npm run build",
+    "build": "rollup -c"
   },
   "author": "Артем Дядюша",
   "license": "ISC",
-  "description": ""
+  "description": "React utilities for easy access to MediaQueryList API. For learning purposes only!",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/react": ">=16.8.0",
+    "rimraf": "^6.0.0",
+    "rollup": "^4.18.1",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "react": ">=16.8.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
