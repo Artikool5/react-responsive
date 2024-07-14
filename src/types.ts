@@ -9,3 +9,5 @@ export type MediaQueryString =
   | `(${Media}: ${MediaValue})`
   | `(${MediaResolution}: ${MediaResolutionValue})`
   | `(orientation: ${MediaOrientationValue})`;
+
+export type ValueOf<T> = T[keyof T];

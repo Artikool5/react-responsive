@@ -1,5 +1,13 @@
 import React, { useMemo } from "react";
-import { MediaOrientationValue, MediaQueryString, MediaResolutionValue, MediaValue } from "./types";
+import {
+  Media,
+  MediaOrientationValue,
+  MediaQueryString,
+  MediaResolution,
+  MediaResolutionValue,
+  MediaValue,
+  ValueOf
+} from "./types";
 import { useMediaQuery } from "./useMediaQuery";
 
 interface MediaQueryProps {
@@ -11,54 +19,46 @@ interface MediaQueryProps {
   minHeight?: MediaValue | number;
   maxHeight?: MediaValue | number;
   children: React.ReactNode | ((matches: boolean) => React.ReactNode);
-}
+};
+type MediaQueryPropsValue = ValueOf<{
+  [K in keyof Omit<MediaQueryProps, 'children'>]: MediaQueryProps[K]
+}>
 
 export function MediaQuery(props: MediaQueryProps) {
-  const { orientation, minResolution, maxResolution, minWidth, maxWidth, minHeight, maxHeight } = props;
-
   const query = useMemo<MediaQueryString>(() => {
-    if (orientation) return `(orientation: ${orientation})`;
-    if (minResolution) {
-      const queryValue: MediaResolutionValue = typeof minResolution === "number"
-        ? `${minResolution}dppx`
-        : minResolution;
-      return `(min-resolution: ${queryValue})`;
-    }
-    if (maxResolution) {
-      const queryValue: MediaResolutionValue = typeof maxResolution === "number"
-        ? `${maxResolution}dppx`
-        : maxResolution;
-      return `(max-resolution: ${queryValue})`;
-    }
-    if (minWidth) {
-      const queryValue: MediaValue = typeof minWidth === "number"
-        ? `${minWidth}px`
-        : minWidth;
-      return `(min-width: ${queryValue})`;
-    }
-    if (maxWidth) {
-      const queryValue: MediaValue = typeof maxWidth === "number"
-        ? `${maxWidth}px`
-        : maxWidth;
-      return `(max-width: ${queryValue})`;
-    }
-    if (minHeight) {
-      const queryValue: MediaValue = typeof minHeight === "number"
-        ? `${minHeight}px`
-        : minHeight;
-      return `(min-height: ${queryValue})`;
-    }
-    if (maxHeight) {
-      const queryValue: MediaValue = typeof maxHeight === "number"
-        ? `${maxHeight}px`
-        : maxHeight;
-      return `(max-height: ${queryValue})`;
+    const mediaKeys: Record<keyof Omit<MediaQueryProps, "children">, Media | MediaResolution | "orientation"> = {
+      minResolution: "min-resolution",
+      maxResolution: "max-resolution",
+      minWidth: "min-width",
+      maxWidth: "max-width",
+      minHeight: "min-height",
+      maxHeight: "max-height",
+      orientation: "orientation",
+    };
+
+    const queries: string[] = [];
+
+    for (let mediaName in mediaKeys) {
+      if (mediaName in props) {
+        const typedMediaName = mediaName as keyof typeof mediaKeys;
+        const mediaValue = props[typedMediaName] as MediaQueryPropsValue;
+
+        if (mediaValue) {
+          const mediaQueryKey = mediaKeys[typedMediaName];
+          const unit = mediaQueryKey?.includes("resolution") ? "dppx" : "px" || '';
+          const mediaQueryValue = typeof mediaValue === "number" ? `${mediaValue}${unit}` : mediaValue;
+
+          queries.push(`${mediaQueryKey}: ${mediaQueryValue}`)
+        }
+      }
     }
 
-    return `(min-width: 0px)`;
-  }, [orientation, minResolution, maxResolution, minWidth, maxWidth, minHeight, maxHeight]);
+    const finalQuery = queries.join(" and ") as MediaQueryString || "(min-width: 0px)";
+    return finalQuery;
 
-  const matches = useMediaQuery({ query: query })
+  }, [props]);
+
+  const matches = useMediaQuery({ query: query });
 
   if (typeof props.children === "function") {
     return props.children(matches);
