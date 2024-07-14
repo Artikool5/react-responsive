@@ -10,18 +10,18 @@ export const useMediaQuery = (query: queryObj) => {
 
   const [matches, setMatches] = useState(false);
 
+  function handleMediaChange(e: MediaQueryListEvent) {
+    setMatches(e.matches);
+  }
+
   useEffect(() => {
     if (!isBrowser) return;
     const mediaQueryList = window.matchMedia(query.query);
     setMatches(mediaQueryList.matches);
 
-    mediaQueryList.addEventListener("change", (e) => {
-      setMatches(e.matches);
-    });
+    mediaQueryList.addEventListener("change", handleMediaChange);
 
-    return mediaQueryList.removeEventListener("change", (e) => {
-      setMatches(e.matches);
-    });
+    return mediaQueryList.removeEventListener("change", handleMediaChange);
   }, [isBrowser, query.query]);
 
   return matches;
