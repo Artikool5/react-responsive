@@ -1,6 +1,6 @@
 {
   "name": "@artikool5/react-responsive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "dist/react-responsive.cjs.js",
   "module": "dist/react-responsive.esm.js",
