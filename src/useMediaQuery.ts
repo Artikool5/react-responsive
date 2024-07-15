@@ -21,7 +21,9 @@ export const useMediaQuery = (query: queryObj) => {
 
     mediaQueryList.addEventListener("change", handleMediaChange);
 
-    return mediaQueryList.removeEventListener("change", handleMediaChange);
+    return () => {
+      mediaQueryList.removeEventListener("change", handleMediaChange);
+    };
   }, [isBrowser, query.query]);
 
   return matches;
