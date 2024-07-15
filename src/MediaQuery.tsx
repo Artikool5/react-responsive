@@ -48,7 +48,7 @@ export function MediaQuery(props: MediaQueryProps) {
           const unit = mediaQueryKey?.includes("resolution") ? "dppx" : "px" || '';
           const mediaQueryValue = typeof mediaValue === "number" ? `${mediaValue}${unit}` : mediaValue;
 
-          queries.push(`${mediaQueryKey}: ${mediaQueryValue}`)
+          queries.push(`(${mediaQueryKey}: ${mediaQueryValue})`)
         }
       }
     }
